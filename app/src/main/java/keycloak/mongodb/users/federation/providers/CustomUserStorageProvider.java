@@ -21,10 +21,10 @@ import keycloak.mongodb.users.federation.utils.DBUtil;
 
 
 public class CustomUserStorageProvider implements UserStorageProvider, CredentialInputValidator, UserLookupProvider {
-    private KeycloakSession session;
-    private ComponentModel model;
+    private final KeycloakSession session;
+    private final ComponentModel model;
     protected Map<String, UserModel> loadedUsers = new HashMap<>();
-    private List<User> users = DBUtil.getAllUsers();
+    private final List<User> users = DBUtil.getAllUsers();
 
     public CustomUserStorageProvider(KeycloakSession session, ComponentModel model) {
         this.session = session;

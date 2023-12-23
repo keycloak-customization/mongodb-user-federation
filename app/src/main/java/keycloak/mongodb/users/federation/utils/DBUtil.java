@@ -10,6 +10,7 @@ import com.mongodb.client.MongoCollection;
 import keycloak.mongodb.users.federation.config.MongoClientConnector;
 import keycloak.mongodb.users.federation.dto.User;
 
+
 public class DBUtil {
 
     public static List<User> getUserByUsername(String username) {

@@ -11,8 +11,6 @@ import keycloak.mongodb.users.federation.providers.CustomUserStorageProvider;
 
 public class CustomUserStorageProviderFactory implements UserStorageProviderFactory<CustomUserStorageProvider> {
 
-    private final String providerName = "mongodb_user_storage_provider";
-
     @Override
     public CustomUserStorageProvider create(KeycloakSession session, ComponentModel model) {
         return new CustomUserStorageProvider(session, model);
@@ -20,7 +18,7 @@ public class CustomUserStorageProviderFactory implements UserStorageProviderFact
 
     @Override
     public String getId() {
-        return providerName;
+        return "mongodb_user_storage_provider";
     }
 
     @Override
