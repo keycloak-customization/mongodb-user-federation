@@ -22,7 +22,7 @@ public class MongoClientConnector {
 
             MongoClientSettings settings = MongoClientSettings.builder()
                     .codecRegistry(pojoCodecRegistry)
-                    .applyConnectionString(new ConnectionString("mongodb://localhost:27017"))
+                    .applyConnectionString(new ConnectionString(ConfigPropertiesLoader.getInstance().getConfigs().getProperty("mongodb.connectionString")))
                     .build();
             mongoClient = MongoClients.create(settings);
         }
@@ -31,6 +31,8 @@ public class MongoClientConnector {
     }
 
     public static MongoDatabase getMongoDatabase() {
-        return getMongoClient().getDatabase("myMongo");
+        return getMongoClient().getDatabase(
+            ConfigPropertiesLoader.getInstance().getConfigs().getProperty("mongodb.database")
+        );
     }
 }
