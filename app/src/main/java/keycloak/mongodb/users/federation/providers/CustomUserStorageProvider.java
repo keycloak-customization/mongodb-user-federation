@@ -54,7 +54,6 @@ public class CustomUserStorageProvider implements UserStorageProvider, Credentia
 
     @Override
     public boolean isValid(RealmModel realm, UserModel user, CredentialInput credentialInput) {
-        System.out.println("given credentials : \nusername : " + user.getUsername() + ", password : " + credentialInput.getChallengeResponse());
         if (!supportsCredentialType(credentialInput.getType())) return false;
         try {
             // here we can add a database treatment instead of a static hashmap
