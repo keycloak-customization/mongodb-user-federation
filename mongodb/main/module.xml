@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<module name="org.mongodb" xmlns="urn:jboss:module:1.3">
+    <properties>
+        <property name="jboss.api" value="private"/>
+    </properties>
+
+    <resources>
+        <resource-root path="mongo-java-driver-3.12.14.jar"/>
+    </resources>
+
+    <dependencies>
+        <module name="javax.api"/>
+        <module name="org.apache.log4j"/>
+    </dependencies>
+</module>
+
+
+<!-- <?xml version="1.0" encoding="UTF-8"?>
+
+<module name="org.mongodb">
+
+
+    <resources>
+        <resource-root path="mongo-java-driver-3.12.14.jar"/>
+    </resources>
+</module> -->

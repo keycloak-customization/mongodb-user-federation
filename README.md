@@ -3,10 +3,14 @@ It's about a Keycloak SPI for Mongodb users federation. With this SPI you can pl
 
 ### Deployment:
 Since we're using a third party library in this module, then besides generating the jar file we'll need to declare the used libraries as modules in keycloak modules folder.
-1. Go to **keycloak-installation-folder/modules/system/layers/keycloak/org**
-2. create a root folder under "**mongodb**" and inside it another one "**main**"
-3. Download mongodb java driver jar file and put it in the folder you created before (in the main folder)
-4. Create a module descriptor file "**module.xml**" and insert the code below:
+- Go to **keycloak-installation-folder/modules/system/layers/keycloak/org**
+- Copy the folder "**mongodb**" from this repo and place it in the path **keycloak-installation-folder/modules/system/layers/keycloak/org**.
+
+Or manually: 
+
+- create a root folder under "**mongodb**" and inside it another one "**main**"
+- Download mongodb java driver jar file and put it in the folder you created before (in the main folder)
+- Create a module descriptor file "**module.xml**" and insert the code below:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -28,8 +32,8 @@ Since we're using a third party library in this module, then besides generating 
 
 ```
 
-5. Now, generate your jar file and put it in the keycloak deployement folder "keycloak/standalone/deployments", if everything goes right it should generate a file with the extension .deployed
-6. Then go to Keycloak dashboard to enable your provider, go to "User Federation" from the menu on the left as in the picture as below
+- Now, generate your jar file and put it in the keycloak deployement folder "keycloak/standalone/deployments", if everything goes right it should generate a file with the extension .deployed
+- Then go to Keycloak dashboard to enable your provider, go to "User Federation" from the menu on the left as in the picture as below
 
 ![Alt text](doc/image.png)
 
