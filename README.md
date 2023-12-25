@@ -1,5 +1,9 @@
 ### About:
-It's about a Keycloak SPI for Mongodb users federation. With this SPI you can plug-in your mongodb users into Keycloak to be used in the auth flow.
+It's about a Keycloak SPI for Mongodb users federation. With this SPI you can plug in your mongodb users into Keycloak to be used in the auth flow.
+
+### Branches:
+- **main**: It contains the backbone concept but assumes that passwords are stored without hashing
+- **feature/hashed-passwords-check**: This assumes that passwords are stored hashed in your mongodb
 
 ### Deployment and setup:
 Start by adding your mongodb database name and connection string in the file "**application.properties**", be sure that this database is accessible by the keycloak environment
@@ -69,7 +73,7 @@ It will redirect you to the provider settings, leave it all default and click "s
 
 ![Alt text](doc/image-1.png)
 
-Now as you confirmed, you can go and test, I've a dummy mongo database with a dummy user data
+Now as you confirmed, you can go and test, I've a dummy mongodb with a dummy user data
 
 ![Alt text](doc/image-2.png)
 
