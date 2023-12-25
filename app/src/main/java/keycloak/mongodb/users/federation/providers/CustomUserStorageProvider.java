@@ -3,7 +3,9 @@ package keycloak.mongodb.users.federation.providers;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import keycloak.mongodb.users.federation.utils.HashUtil;
 import org.keycloak.component.ComponentModel;
 import org.keycloak.credential.CredentialInput;
 import org.keycloak.credential.CredentialInputValidator;
@@ -18,6 +20,8 @@ import org.keycloak.storage.user.UserLookupProvider;
 
 import keycloak.mongodb.users.federation.dto.User;
 import keycloak.mongodb.users.federation.utils.DBUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class CustomUserStorageProvider implements UserStorageProvider, CredentialInputValidator, UserLookupProvider {
@@ -25,6 +29,7 @@ public class CustomUserStorageProvider implements UserStorageProvider, Credentia
     private final ComponentModel model;
     protected Map<String, UserModel> loadedUsers = new HashMap<>();
     private final List<User> users = DBUtil.getAllUsers();
+    private static final Logger LOGGER = LoggerFactory.getLogger(CustomUserStorageProvider.class);
 
     public CustomUserStorageProvider(KeycloakSession session, ComponentModel model) {
         this.session = session;
@@ -44,10 +49,12 @@ public class CustomUserStorageProvider implements UserStorageProvider, Credentia
     @Override
     public boolean isConfiguredFor(RealmModel realm, UserModel user, String credentialType) {
         try {
-            String password = users.stream().filter(mappedUser -> mappedUser.getUsername().equals(user.getUsername())).findFirst().get().getPassword();
-            return credentialType.equals(PasswordCredentialModel.TYPE) && password != null;
+            Optional<User> storedUser = users.stream().filter(
+                    mappedUser -> mappedUser.getUsername().equals(user.getUsername())
+            ).findFirst();
+            return storedUser.isPresent() && credentialType.equals(PasswordCredentialModel.TYPE) && storedUser.get().getPassword() != null;
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error(e.toString());
             return false;
         }
     }
@@ -56,12 +63,15 @@ public class CustomUserStorageProvider implements UserStorageProvider, Credentia
     public boolean isValid(RealmModel realm, UserModel user, CredentialInput credentialInput) {
         if (!supportsCredentialType(credentialInput.getType())) return false;
         try {
-            // here we can add a database treatment instead of a static hashmap
-            String password = users.stream().filter(mappedUser -> mappedUser.getUsername().equals(user.getUsername())).findFirst().get().getPassword();
-            if (password == null) return false;
-            return password.equals(credentialInput.getChallengeResponse());
+            Optional<User> storedUser = users.stream().filter(
+                    mappedUser -> mappedUser.getUsername().equals(user.getUsername())
+            ).findFirst();
+            if (storedUser.isEmpty() || storedUser.get().getPassword() == null) return false;
+            return storedUser.get().getPassword().equals(
+                    HashUtil.hashData(credentialInput.getChallengeResponse())
+            );
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error(e.toString());
             return false;
         }
     }
@@ -77,8 +87,7 @@ public class CustomUserStorageProvider implements UserStorageProvider, Credentia
     public UserModel getUserByUsername(String username, RealmModel realm) {
         UserModel adapter = loadedUsers.get(username);
         if (adapter == null) {
-            User user = checkUserByUsername(username,users);
-            if (user != null) {
+            if (checkUserByUsername(username, users).isPresent()) {
                 adapter = createAdapter(realm, username);
                 loadedUsers.put(username, adapter);
             }
@@ -86,10 +95,10 @@ public class CustomUserStorageProvider implements UserStorageProvider, Credentia
         return adapter;
     }
 
-    public static User checkUserByUsername(String username, List<User> users) {
+    public static Optional<User> checkUserByUsername(String username, List<User> users) {
         if (users.stream().anyMatch(obj -> obj.getUsername().equals(username)))
-            return users.stream().filter(obj -> obj.getUsername().equals(username)).findFirst().get();
-        return null;
+            return users.stream().filter(obj -> obj.getUsername().equals(username)).findFirst();
+        return Optional.empty();
     }
 
     private UserModel createAdapter(RealmModel realm, String username) {

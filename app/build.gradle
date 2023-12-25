@@ -23,13 +23,17 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.7.2'
 
     // This dependency is used by the application.
-    implementation 'com.google.guava:guava:30.1.1-jre'
+    implementation 'com.google.guava:guava:32.0.0-android'
 
     // For mongodb
     implementation 'org.mongodb:mongodb-driver-sync:4.11.1'
 
     // Keycloak SPI
     compileOnly group: 'org.keycloak', name: 'keycloak-server-spi', version: '13.0.0'
+
+    // Logging
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+
 }
 
 application {
